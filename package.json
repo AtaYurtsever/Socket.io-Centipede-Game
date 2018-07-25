@@ -1,0 +1,17 @@
+{
+  "name": "Centipede-Game",
+  "version": "1.0.0",
+  "description": "A realtime online centipede game.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Ata YURTSEVER",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "jquery": "^3.1.1",
+    "socket.io": "^1.7.4"
+  },
+  "repository": {}
+}

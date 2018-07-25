@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.0/socket.io.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>    
+    </head>
+    <body>
+        <div class="menu" id="menu">
+            <h1>button</h1>
+            <h3>How To Play</h3>
+            <ol>
+                <li>Player 1: Create a new game by entering the username</li>
+                <li>Player 2: Enter another username and the room id that is displayed on first window.</li>
+                <li>Click on join game. </li>
+            </ol>
+            <h4>Create a new Game</h4>
+            <input type="text" name="name" id="newName" placeholder="Enter your name" required>
+            <button id="new">New Game</button>
+            <br><br>
+            <h4>Join an existing game</h4>
+            <input type="text" name="name" id="nameJoin" placeholder="Enter your name" required>
+            <input type="text" name="room" id="room" placeholder="Enter Game ID" required>
+            <button id="join">Join Game</button>
+        </div>
+
+        <div class="game" id="game">
+            
+            <button id="defect">Defect</button>
+            <button id="continue">Continue</button>
+        </div>
+        <script src="/main.js"></script>
+    </body>
+</html>
