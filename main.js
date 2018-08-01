@@ -1,62 +1,88 @@
-var socket = io.connect('http:localhost:3000');
+
+            var socket= io.connect('http://localhost:3000');
+        
+            var playerName;
+            var roomName;
+            $('#game').hide();
+            
+        
+            var disable = function(bool){
+                $('#defect').attr('disabled', bool);
+                $('#continue').attr('disabled', bool);
+            }
+            disable(true);
+
+            $('#defect').click(function(){
+                socket.emit('gameEnd',{name: playerName, room:roomName});
+            });
+
+            $('#continue').click(function(){
+                socket.emit('continue', {name: playerName,room:roomName});
+                disable(true);
+            });
 
 
-var playerName;
-var roomID;
-var playerTurn = false;
+            socket.on('play',function(data){
+                console.log('myturn!!!');
+                disable(false);
+            });
 
 
-//sets game playable
-var setPlayable = function( bool){
-    $('#defect').attr('disabled', !bool);
-    $('#continue').attr('disabled', !bool);
-};
+            socket.on('gameEnd', function(data){
+                console.log('game end');
+                if(playerName == data.name){
+                    alert('you win');
+                }
+                else{
+                    alert('you lose');
+                }
+                $('#game').hide();
+            });
+        
+            socket.on('openGame1', function(data){
+                $('#menu').hide();
+                $('#game').show();
+                playerName = data.name;
+                roomName = data.room;
+                disable(false);
+                console.log(data.room);
+            });
 
-//defect
-var defect = function(){
-    socket.emit('play', {name:playerName, defect:true});
-}
+            socket.on('openGame2', function(data){
+                $('#menu').hide();
+                $('#game').show();
+                disable(true);
+                playerName = data.name;
+                roomName = data.room;
+                console.log(data.room);
+            });
 
-//continue
-var cont = function(){
-    socket.emit('play', {name:playerName, defect:false});
-}
+            socket.on('err', function(data){
+                alert(data.message);
+            });
+        
+            $('#new').on('click', function(){
+                var name = $('#newName').val();
+                if(!name){
+                    alert('please enter name');
+                    return;
+                }
+                console.log('newbuttonpress');
+        
+                socket.emit('create', {name: name});
+            });
+            
+        
+            $('#join').on('click', function(){
+                var name = $('#nameJoin').val();
+                var room = $('#room').val();
+                console.log(name + '--' + room);
+                if(!name || !room){
+                    alert('enter name and room');
+                    return;
+                }
+                console.log('joinbuttonpress');
 
-//gameEnd
-var gameEnd = function( bool){
-    //gameEnd
-}
-
-
-
-//socket on methods
-
-//initialize game as p1
-socket.on('startP1', function(data){
-    playerName = data.name;
-    roomID = data.roomID;
-    playerTurn = true;
-});
-
-//initialize game as p2
-socket.on('startp2', function(data){
-    playerName = data.name;
-    roomID = data.roomID;
-    playerTurn = false;
-    setPlayable(true);
-});
-
-//make game playable
-socket.on('gameStart', function(data){
-    setPlayable(data);
-});
-
-//enemy plays turn
-socket('play', function(data){
-    if(data){
-        setPlayable(true);
-    }
-    else{
-        gameEnd(false);
-    }
-});
+                socket.emit('join', {name:name, room:room});
+            });
+        

@@ -1,9 +1,12 @@
 <html>
-    <head>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.0/socket.io.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>    
-    </head>
-    <body>
+    
+	<body>
+        
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.0/socket.io.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        
+    
+    
         <div class="menu" id="menu">
             <h1>button</h1>
             <h3>How To Play</h3>
@@ -21,12 +24,137 @@
             <input type="text" name="room" id="room" placeholder="Enter Game ID" required>
             <button id="join">Join Game</button>
         </div>
-
-        <div class="game" id="game">
-            
+        
+        <div id="game">
+            <h1 id="roomHeader"></h1>
+            <h2 id="userHello"></h2>
+            <h3 id="turn"></h3>
+            <h3 id="bet"></h3>
             <button id="defect">Defect</button>
             <button id="continue">Continue</button>
         </div>
-        <script src="/main.js"></script>
+        
+
+        <script >
+
+            var socket= io.connect('http://localhost:3000');
+        
+            var playerName;
+            var roomName;
+            var turn=1;
+
+            var yourBet = 16;
+            var enemyBet = 2;
+            $('#game').hide();
+            $('#turn').text('turn no: ' + turn);    
+            $('#bet').text('myBet: ' + yourBet + ' enemy Bet: ' + enemyBet); 
+        
+            var disable = function(bool){
+                $('#defect').attr('disabled', bool);
+                $('#continue').attr('disabled', bool);
+            }
+            disable(true);
+
+            var swapBets = function(bool){
+                var useless = yourBet;
+                yourBet = enemyBet;
+                enemyBet = useless;
+                if(bool){
+                    yourBet  *= 2;
+                    enemyBet *= 2;
+                }
+                $('#bet').text('myBet: ' + yourBet + ' enemy Bet: ' + enemyBet); 
+            }
+
+            $('#defect').click(function(){
+                socket.emit('gameEnd',{name: playerName, room:roomName});
+            });
+
+            $('#continue').click(function(){
+                swapBets(true);
+                socket.emit('continue', {name: playerName,room:roomName});
+                disable(true);
+            });
+
+
+            socket.on('play',function(data){
+                turn++;
+                var message = 'turn no: ' + turn;
+                $('#turn').text(message);
+                console.log('myturn!!!');
+                disable(false);
+                swapBets(true);
+            });
+
+
+            socket.on('gameEnd', function(data){
+                console.log('game end');
+                var message ='';
+                if(playerName == data.name){
+                    message += 'you win';
+                }
+                else{
+                    message +='you lose';
+                }
+                alert(message + '\nyour points:' + yourBet);
+                $('#game').hide();
+            });
+        
+            socket.on('openGame1', function(data){
+                $('#menu').hide();
+                $('#game').show();
+                playerName = data.name;
+                $('#userHello').text('hello ' + playerName);
+                roomName = data.room;
+                disable(false);
+                console.log(data.room);
+                $('#roomHeader').text('room id:' + roomName);
+            });
+
+            socket.on('openGame2', function(data){
+                $('#menu').hide();
+                $('#game').show();
+                disable(true);
+                turn = 0;
+                swapBets(false);
+                playerName = data.name;
+                $('#userHello').text('hello ' + playerName);
+                roomName = data.room;
+                console.log(data.room);
+                $('#roomHeader').text('room id:' + roomName);
+            });
+
+            socket.on('err', function(data){
+                alert(data.message);
+            });
+        
+            $('#new').on('click', function(){
+                var name = $('#newName').val();
+                if(!name){
+                    alert('please enter name');
+                    return;
+                }
+                console.log('newbuttonpress');
+        
+                socket.emit('create', {name: name});
+            });
+            
+        
+            $('#join').on('click', function(){
+                var name = $('#nameJoin').val();
+                var room = $('#room').val();
+                console.log(name + '--' + room);
+                if(!name || !room){
+                    alert('enter name and room');
+                    return;
+                }
+                console.log('joinbuttonpress');
+
+                socket.emit('join', {name:name, room:room});
+            });
+        
+        
+        </script>
+
     </body>
 </html>
