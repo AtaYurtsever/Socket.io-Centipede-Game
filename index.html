@@ -24,7 +24,12 @@
             <input type="text" name="room" id="room" placeholder="Enter Game ID" required>
             <button id="join">Join Game</button>
         </div>
-        
+
+        <div id="commit">
+            <input type="number" id="commitment" placeholder="your commitment">
+            <button id="commitButton">commit</button>
+        </div>
+
         <div id="game">
             <h1 id="roomHeader"></h1>
             <h2 id="userHello"></h2>
@@ -42,13 +47,17 @@
             var playerName;
             var roomName;
             var turn=1;
+            var commitment;
+            var penalty = -1000;
 
             var yourBet = 16;
             var enemyBet = 2;
             $('#game').hide();
+            $('#commit').hide();
             $('#turn').text('turn no: ' + turn);    
             $('#bet').text('myBet: ' + yourBet + ' enemy Bet: ' + enemyBet); 
-        
+
+
             var disable = function(bool){
                 $('#defect').attr('disabled', bool);
                 $('#continue').attr('disabled', bool);
@@ -67,13 +76,24 @@
             }
 
             $('#defect').click(function(){
-                socket.emit('gameEnd',{name: playerName, room:roomName});
+                if(turn < commitment){
+                    yourBet += penalty;
+                }
+                socket.emit('gameEnd',{name: playerName, room:roomName, turn:turn, finishingBet: yourBet, otherBet: enemyBet});
+                
             });
 
             $('#continue').click(function(){
                 swapBets(true);
                 socket.emit('continue', {name: playerName,room:roomName});
                 disable(true);
+            });
+
+            $('#commitButton').click(function(){
+                commitment = $('#commitment').val();
+                socket.emit('commit', { name:playerName, commit:commitment})
+                $('#commit').hide();
+                $('#game').show();
             });
 
 
@@ -91,10 +111,10 @@
                 console.log('game end');
                 var message ='';
                 if(playerName == data.name){
-                    message += 'you win';
+                    message += 'you defect';
                 }
                 else{
-                    message +='you lose';
+                    message +='enemy defect';
                 }
                 alert(message + '\nyour points:' + yourBet);
                 $('#game').hide();
@@ -102,7 +122,8 @@
         
             socket.on('openGame1', function(data){
                 $('#menu').hide();
-                $('#game').show();
+                $('#commit').show();
+                //$('#game').show();
                 playerName = data.name;
                 $('#userHello').text('hello ' + playerName);
                 roomName = data.room;
@@ -113,7 +134,8 @@
 
             socket.on('openGame2', function(data){
                 $('#menu').hide();
-                $('#game').show();
+                $('#commit').show();
+                //$('#game').show();
                 disable(true);
                 turn = 0;
                 swapBets(false);
