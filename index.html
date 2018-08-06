@@ -1,4 +1,7 @@
 <html>
+    <head>
+            <link rel="stylesheet" href="main.css">
+    </head>
     
 	<body>
         
@@ -91,7 +94,7 @@
 
             $('#commitButton').click(function(){
                 commitment = $('#commitment').val();
-                socket.emit('commit', { name:playerName, commit:commitment})
+                socket.emit('commit', { name:playerName, commit:commitment});
                 $('#commit').hide();
                 $('#game').show();
             });
