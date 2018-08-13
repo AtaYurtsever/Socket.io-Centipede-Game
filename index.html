@@ -60,13 +60,20 @@
             $('#turn').text('turn no: ' + turn);    
             $('#bet').text('myBet: ' + yourBet + ' enemy Bet: ' + enemyBet); 
 
-
+            /**
+            disables the buttons in game according to bool
+            @param bool boolean 
+            */
             var disable = function(bool){
                 $('#defect').attr('disabled', bool);
                 $('#continue').attr('disabled', bool);
             }
             disable(true);
 
+            /**
+            swaps bets alsodoubles them if bool is true
+            @param bool boolean
+            */
             var swapBets = function(bool){
                 var useless = yourBet;
                 yourBet = enemyBet;
@@ -78,6 +85,7 @@
                 $('#bet').text('myBet: ' + yourBet + ' enemy Bet: ' + enemyBet); 
             }
 
+            //defect buttons click function
             $('#defect').click(function(){
                 if(turn < commitment){
                     yourBet += penalty;
@@ -86,12 +94,14 @@
                 
             });
 
+            //continue buttons click function
             $('#continue').click(function(){
                 swapBets(true);
                 socket.emit('continue', {name: playerName,room:roomName});
                 disable(true);
             });
 
+            //commit buttons click function
             $('#commitButton').click(function(){
                 commitment = $('#commitment').val();
                 socket.emit('commit', { name:playerName, commit:commitment});
@@ -99,7 +109,9 @@
                 $('#game').show();
             });
 
-
+            /**
+            updates turn, enables game buttons and swapsBets(also doubles them)
+            */
             socket.on('play',function(data){
                 turn++;
                 var message = 'turn no: ' + turn;
@@ -109,7 +121,9 @@
                 swapBets(true);
             });
 
-
+            /**
+            Informs user on the crrent game state if game ends
+            */
             socket.on('gameEnd', function(data){
                 console.log('game end');
                 var message ='';
@@ -123,6 +137,8 @@
                 $('#game').hide();
             });
         
+
+            /**opens the game as P1 enables the buttons*/
             socket.on('openGame1', function(data){
                 $('#menu').hide();
                 $('#commit').show();
@@ -135,6 +151,7 @@
                 $('#roomHeader').text('room id:' + roomName);
             });
 
+            /** Opens the Game as P2 disables buttons*/
             socket.on('openGame2', function(data){
                 $('#menu').hide();
                 $('#commit').show();
@@ -149,10 +166,12 @@
                 $('#roomHeader').text('room id:' + roomName);
             });
 
+            /**alerts data.mesage*/
             socket.on('err', function(data){
                 alert(data.message);
             });
         
+            //new game button click function
             $('#new').on('click', function(){
                 var name = $('#newName').val();
                 if(!name){
@@ -164,7 +183,7 @@
                 socket.emit('create', {name: name});
             });
             
-        
+            //join game button click function
             $('#join').on('click', function(){
                 var name = $('#nameJoin').val();
                 var room = $('#room').val();

@@ -14,7 +14,7 @@ io.on('connection', function(socket){
 
     console.log('a user connected');
 
-
+    /**creates new room and makes the user join it */
     socket.on('create', function(data){
         socket.join( 'room-' + ++room);
         socket.emit('openGame1', {name: data.name, room: 'room-' + room});
@@ -22,7 +22,7 @@ io.on('connection', function(socket){
         dataJson.player1 = data.name;
     });
     
-
+    /** adds user to given room */
     socket.on('join', function(data){
         var room = io.nsps['/'].adapter.rooms[data.room];
       if( room && room.length == 1){
@@ -37,6 +37,7 @@ io.on('connection', function(socket){
       
     });
 
+    /**collects data when game ends and informs other user */
     socket.on('gameEnd',function(data){
         io.sockets.in(data.room).emit('gameEnd',{name: data.name});
         console.log('game end player ' + data.name + ' win');
@@ -48,11 +49,13 @@ io.on('connection', function(socket){
         result(dataJson);
     });
 
+    /**informs other user if player chooses continue */
     socket.on('continue',function(data){
         socket.broadcast.to(data.room).emit('play', {name:data.name});
         console.log(data.name+ ' continue');
     });
 
+    /**collects data of commits */
     socket.on('commit', function(data){
         console.log('player ' + data.name + ' commited ' + data.commit);
         if(data.name == dataJson.player1){
@@ -66,6 +69,10 @@ io.on('connection', function(socket){
 
 })
 
+/**
+ * prints whole data json to results.csv
+ * @param {json} arr 
+ */
 var result = function(arr){
     var message = '\n';
     for(i in arr){
