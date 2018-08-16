@@ -19,7 +19,7 @@ io.on('connection', function(socket){
         socket.join( 'room-' + ++room);
         socket.emit('openGame1', {name: data.name, room: 'room-' + room});
         console.log('opened game player=' + data.name);
-        dataJson.player1 = data.name;
+        //dataJson.player1 = data.name;
     });
     
     /** adds user to given room */
@@ -29,7 +29,7 @@ io.on('connection', function(socket){
         socket.join(data.room);
         socket.emit('openGame2', {name: data.name, room: data.room })
         console.log('joined game player=' + data.name);
-        dataJson.player2 = data.name;
+        //dataJson.player2 = data.name;
       }
       else {
         socket.emit('err', {message: 'Sorry, The room is full!'});
@@ -39,13 +39,25 @@ io.on('connection', function(socket){
 
     /**collects data when game ends and informs other user */
     socket.on('gameEnd',function(data){
-        io.sockets.in(data.room).emit('gameEnd',{name: data.name});
+        
         console.log('game end player ' + data.name + ' win');
         dataJson.finishingPlayer = data.name;
         dataJson.finishTurn = data.turn;
         dataJson.finishingBet = data.finishingBet;
         dataJson.otherBet = data.otherBet;
+        dataJson.player1 = data.name;
+        dataJson.player1Commit = data.commit;
+        io.sockets.in(data.room).emit('gameEnd',{name: data.name});
         //console.log(dataJson);
+        
+    });
+
+    socket.on('sendCred',function(data){
+        console.log(data.json);
+        
+        dataJson.player2 = data.name;
+        dataJson.player2Commit = data.commit;
+        console.log('printing');
         result(dataJson);
     });
 
@@ -86,6 +98,6 @@ app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html');
 });
   
-  server.listen(3000, '0.0.0.0', function(){
-    console.log('listening on *:3000');
+  server.listen(80, '172.20.40.157', function(){
+    console.log('listening on *:80');
 });
