@@ -28,10 +28,7 @@
             <button id="join">Join Game</button>
         </div>
 
-        <div id="commit">
-            <input type="number" id="commitment" placeholder="your commitment">
-            <button id="commitButton">commit</button>
-        </div>
+      
 
         <div id="game">
             <h1 id="roomHeader"></h1>
@@ -45,18 +42,17 @@
 
         <script >
 
-            var socket= io.connect('172.20.40.157');
+            var socket= io.connect('localhost');
         
             var playerName;
             var roomName;
             var turn=1;
-            var commitment;
             var penalty = -1000;
 
             var yourBet = 16;
             var enemyBet = 2;
             $('#game').hide();
-            $('#commit').hide();
+  
             $('#turn').text('turn no: ' + turn);    
             $('#bet').text('myBet: ' + yourBet + ' enemy Bet: ' + enemyBet); 
 
@@ -87,10 +83,8 @@
 
             //defect buttons click function
             $('#defect').click(function(){
-                if(turn < commitment){
-                    yourBet += penalty;
-                }
-                socket.emit('gameEnd',{name: playerName, room:roomName, turn:turn, finishingBet: yourBet, otherBet: enemyBet, commit:commitment});
+                
+                socket.emit('gameEnd',{name: playerName, room:roomName, turn:turn, finishingBet: yourBet, otherBet: enemyBet});
                 
             });
 
@@ -101,13 +95,7 @@
                 disable(true);
             });
 
-            //commit buttons click function
-            $('#commitButton').click(function(){
-                commitment = $('#commitment').val();
-                socket.emit('commit', { name:playerName, commit:commitment});
-                $('#commit').hide();
-                $('#game').show();
-            });
+            
 
             /**
             updates turn, enables game buttons and swapsBets(also doubles them)
@@ -131,7 +119,7 @@
                     message += 'you defect';
                 }
                 else{
-                    socket.emit('sendCred', {name: playerName, commit:commitment});
+                    socket.emit('sendCred', {name: playerName, penalty:penalty});
                     message +='enemy defect';
                 }
                 alert(message + '\nyour points:' + yourBet);
@@ -142,7 +130,7 @@
             /**opens the game as P1 enables the buttons*/
             socket.on('openGame1', function(data){
                 $('#menu').hide();
-                $('#commit').show();
+                $('#game').show();
                 //$('#game').show();
                 playerName = data.name;
                 $('#userHello').text('hello ' + playerName);
@@ -155,7 +143,7 @@
             /** Opens the Game as P2 disables buttons*/
             socket.on('openGame2', function(data){
                 $('#menu').hide();
-                $('#commit').show();
+                $('#game').show();
                 //$('#game').show();
                 disable(true);
                 turn = 0;

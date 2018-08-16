@@ -7,9 +7,9 @@ var fs = require('fs');
 
 var room = 0;
 var dataJson = {player1: undefined, player2: undefined, 
-                player1Commit: undefined, player2Commit: undefined,
                 finishingPlayer: undefined, finishTurn: 
-                undefined, finishingBet: undefined, otherBet: undefined}
+                undefined, finishingBet: undefined, otherBet: undefined,
+                penalty:undefined}
 io.on('connection', function(socket){
 
     console.log('a user connected');
@@ -46,7 +46,7 @@ io.on('connection', function(socket){
         dataJson.finishingBet = data.finishingBet;
         dataJson.otherBet = data.otherBet;
         dataJson.player1 = data.name;
-        dataJson.player1Commit = data.commit;
+      
         io.sockets.in(data.room).emit('gameEnd',{name: data.name});
         //console.log(dataJson);
         
@@ -54,9 +54,9 @@ io.on('connection', function(socket){
 
     socket.on('sendCred',function(data){
         console.log(data.json);
-        
+        dataJson.penalty = data.penalty;
         dataJson.player2 = data.name;
-        dataJson.player2Commit = data.commit;
+
         console.log('printing');
         result(dataJson);
     });
@@ -67,17 +67,7 @@ io.on('connection', function(socket){
         console.log(data.name+ ' continue');
     });
 
-    /**collects data of commits */
-    socket.on('commit', function(data){
-        console.log('player ' + data.name + ' commited ' + data.commit);
-        if(data.name == dataJson.player1){
-            dataJson.player1Commit = data.commit;
-        }
-        else{
-            dataJson.player2Commit = data.commit;
-
-        }
-    })
+    
 
 })
 
@@ -98,6 +88,6 @@ app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html');
 });
   
-  server.listen(80, '172.20.40.157', function(){
+  server.listen(80, function(){
     console.log('listening on *:80');
 });
