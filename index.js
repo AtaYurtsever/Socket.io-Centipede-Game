@@ -98,6 +98,6 @@ app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html');
 });
   
-  server.listen(80, '172.20.40.157', function(){
+  server.listen(80, '192.168.1.44', function(){
     console.log('listening on *:80');
 });

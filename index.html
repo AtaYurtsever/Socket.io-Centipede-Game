@@ -49,7 +49,7 @@
 
         <script >
 
-            var socket= io.connect('172.20.40.157');
+            var socket= io.connect('192.168.1.44');
         
             var playerName;
             var roomName;
@@ -63,7 +63,7 @@
             $('#commit').hide();
             $('#turn').text('turn no: ' + turn);    
             $('#bet').text('myBet: ' + yourBet + ' enemy Bet: ' + enemyBet); 
-            $('#penalty').text(penalty);  
+            $('#penalty').text('Penalty:' + penalty);  
             /**
             disables the buttons in game according to bool
             @param bool boolean 
@@ -91,7 +91,7 @@
 
             //defect buttons click function
             $('#defect').click(function(){
-                socket.emit('gameEnd',{name: playerName, room:roomName, turn:turn, finishingBet: yourBet, otherBet: enemyBet, commit:commitment});
+                socket.emit('gameEnd',{name: playerName, room:roomName, turn:turn, finishingBet: yourBet+penalty, otherBet: enemyBet, commit:commitment});
                 
             });
 
