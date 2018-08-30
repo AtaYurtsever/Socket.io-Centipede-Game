@@ -91,9 +91,6 @@
 
             //defect buttons click function
             $('#defect').click(function(){
-                if(turn < commitment){
-                    yourBet += penalty;
-                }
                 socket.emit('gameEnd',{name: playerName, room:roomName, turn:turn, finishingBet: yourBet, otherBet: enemyBet, commit:commitment});
                 
             });
@@ -120,9 +117,12 @@
                 turn++;
                 var message = 'turn no: ' + turn;
                 $('#turn').text(message);
-                console.log('myturn!!!');
+                //console.log('myturn!!!');
                 disable(false);
                 swapBets(true);
+                if(commitment == turn){
+                    socket.emit('gameEnd',{name: playerName, room:roomName, turn:turn, finishingBet: yourBet, otherBet: enemyBet, commit:commitment});
+                }
             });
 
             /**
