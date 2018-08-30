@@ -29,6 +29,9 @@
         </div>
 
         <div id="commit">
+            <h1 id="roomHeader"></h1>
+            <h2 id="userHello"></h2>
+            <h3 id="penalty"></h3>
             <input type="number" id="commitment" placeholder="your commitment">
             <button id="commitButton">commit</button>
         </div>
@@ -36,6 +39,7 @@
         <div id="game">
             <h1 id="roomHeader"></h1>
             <h2 id="userHello"></h2>
+            <h3 id="penalty"></h3>
             <h3 id="turn"></h3>
             <h3 id="bet"></h3>
             <button id="defect">Defect</button>
@@ -59,7 +63,7 @@
             $('#commit').hide();
             $('#turn').text('turn no: ' + turn);    
             $('#bet').text('myBet: ' + yourBet + ' enemy Bet: ' + enemyBet); 
-
+            $('#penalty').text(penalty);  
             /**
             disables the buttons in game according to bool
             @param bool boolean 
