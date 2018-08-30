@@ -12,6 +12,7 @@
     
         <div class="menu" id="menu">
             <h1>button</h1>
+            <h3 id="penalty"></h3>
             <h3>How To Play</h3>
             <ol>
                 <li>Player 1: Create a new game by entering the username</li>
@@ -31,6 +32,7 @@
       
 
         <div id="game">
+            <h3 id="penalty"></h3>
             <h1 id="roomHeader"></h1>
             <h2 id="userHello"></h2>
             <h3 id="turn"></h3>
@@ -55,7 +57,9 @@
   
             $('#turn').text('turn no: ' + turn);    
             $('#bet').text('myBet: ' + yourBet + ' enemy Bet: ' + enemyBet); 
+            $('#penalty').text('Penalty:' + penalty);
 
+            
             /**
             disables the buttons in game according to bool
             @param bool boolean 
