@@ -11,7 +11,7 @@
     
     
         <div class="menu" id="menu">
-            <h1>button</h1>
+            <h1>Hello!</h1>
             <h3 id="penalty"></h3>
             <h3>How To Play</h3>
             <ol>
@@ -32,7 +32,7 @@
         <div id="commit">
             <h1 id="roomHeader"></h1>
             <h2 id="userHello"></h2>
-            <h3 id="penalty"></h3>
+            <h3 id="penalty2"></h3>
             <input type="number" id="commitment" placeholder="your commitment">
             <button id="commitButton">commit</button>
         </div>
@@ -40,7 +40,7 @@
         <div id="game">
             <h1 id="roomHeader"></h1>
             <h2 id="userHello"></h2>
-            <h3 id="penalty"></h3>
+            <h3 id="penalty3"></h3>
             <h3 id="turn"></h3>
             <h3 id="bet"></h3>
             <button id="defect">Defect</button>
@@ -50,7 +50,7 @@
 
         <script >
 
-            var socket= io.connect('172.20.40.157');
+            var socket= io.connect('localhost:3000');
         
             var playerName;
             var roomName;
@@ -64,7 +64,9 @@
             $('#commit').hide();
             $('#turn').text('turn no: ' + turn);    
             $('#bet').text('myBet: ' + yourBet + ' enemy Bet: ' + enemyBet); 
-            $('#penalty').text(penalty);  
+            $('#penalty').text('penalty: ' + penalty);  
+            $('#penalty2').text('penalty: ' + penalty);  
+            $('#penalty3').text('penalty: ' + penalty);  
             /**
             disables the buttons in game according to bool
             @param bool boolean 
